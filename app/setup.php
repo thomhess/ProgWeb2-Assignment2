@@ -62,7 +62,14 @@ class DB {
             rating FLOAT(2,1),
             publisher VARCHAR(15))';
         if ($this->conn->exec($query)===false)
-          die("CREATE artivles FAIL" . $this->conn->errorInfo()[2]);
+          die("CREATE articles FAIL" . $this->conn->errorInfo()[2]);
+        
+        // create the categories table
+        $query = 'CREATE TABLE IF NOT EXISTS categories (
+            id INT PRIMARY KEY AUTO_INCREMENT,
+            category VARCHAR(10))';
+        if ($this->conn->exec($query)===false)
+          die("CREATE categories FAIL" . $this->conn->errorInfo()[2]);
 
     }
     
@@ -73,7 +80,12 @@ class DB {
             die("INSERT article FAIL" . $this->conn->errorInfo()[2]);
         
         // Insert data into users
-        $query = "INSERT INTO users(username, password, first_name, surname, email, usertype) VALUES('thomhess', 'passord', 'oørstenavn', 'etternavn', 'e@mail', '1')";
+        $query = "INSERT INTO users(username, password, first_name, surname, email, usertype) VALUES('thomhess', '123', 'fornavn', 'etternavn', 'e@mail', '1')";
+        if ($this->conn->exec($query)===false)
+            die("INSERT USER FAIL" . $this->conn->errorInfo()[2]);
+        
+        // Insert data into categories
+        $query = "INSERT INTO categories(category) VALUES('Sport')";
         if ($this->conn->exec($query)===false)
             die("INSERT USER FAIL" . $this->conn->errorInfo()[2]);
     }//insertDefaultData
@@ -82,13 +94,47 @@ class DB {
         
         $sql = "INSERT INTO users ( username, password, first_name, surname, email, usertype) VALUES ( :username, :password, :first_name, :surname, :email, :usertype )";
         $query = $this->conn->prepare( $sql );
-        $result = $query->execute( array( ':username'=>$username, ':password'=>$password, ':first_name'=>$first_name, ':surname'=>$surname, ':email'=>$email, ':usertype'=>$usertype ) );
-//        if ( $result ){
-//          echo "<p>Bruker opprettet!</p>";
-//        } else {
-//          echo "<p>Sorry, there has been a problem inserting your details. Please contact admin.</p>";
-//        }
+        $result = $query->execute( array( ':username'=>$username, ':password'=>hash('sha256', $password), ':first_name'=>$first_name, ':surname'=>$surname, ':email'=>$email, ':usertype'=>$usertype ) );
+    }
+    
+    public function insertNewsArticle($heading, $text, $category, $publisher) {
+        $currentTime = time();
+        $defaultRating = '3';
+        $sql = "INSERT INTO articles(datetime, heading, text, category, rating, publisher) VALUES(:datetime, :heading, :text, :category, :rating, :publisher)";
+        $query = $this->conn->prepare( $sql );
+        $result = $query->execute( array( ':datetime'=>$currentTime, ':heading'=>$heading, ':text'=>$text, ':category'=>$category, ':rating'=>$defaultRating, ':publisher'=>$publisher ) );
+    }
+    
+    public function insertCategory($category){
         
+        $sql = "INSERT INTO categories ( category ) VALUES ( :category )";
+        $query = $this->conn->prepare( $sql );
+        $result = $query->execute( array( ':category'=>$category ) );
+    }
+    
+    public function deleteNewsArticle($id){
+        $sql = "DELETE FROM articles WHERE id = :id";
+        $query = $this->conn->prepare( $sql );
+        $result = $query->execute( array( ':id'=>$id ) );
+    }
+    
+    public function deleteCategory($id){
+        $sql = "DELETE FROM categories WHERE id = :id";
+        $query = $this->conn->prepare( $sql );
+        $result = $query->execute( array( ':id'=>$id ) );
+    }
+    
+    public function updateNewsArticle($id, $heading, $text, $category){
+        $sql = "UPDATE articles SET heading=:heading, text=:text, category=:category WHERE id=:id";
+        $query = $this->conn->prepare( $sql );
+        $result = $query->execute( array( ':id'=>$id, ':heading'=>$heading, ':text'=>$text, ':category'=>$category ) );
+    }
+    
+    public function categoryCount($category){
+        $sql = "SELECT id FROM articles WHERE category = :category";
+        $query = $this->conn->prepare( $sql );
+        $result = $query->execute( array( ':category'=>$category ) );
+        return $query->rowCount();
     }
 
 }//class

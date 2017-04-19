@@ -27,8 +27,8 @@ if (!empty($_POST['btnRegister'])) {
             } else {
                 $user_id = $database->insertNewUser($_POST['username'], $_POST['password'], $_POST['first_name'], $_POST['surname'], $_POST['email'], 1);
                 // set session and redirect user to the profile page
-                $_SESSION['user_id'] = $user_id;
-                header("Location: profile.php");
+                $_SESSION['user_id'] = $user_id; // Set Session
+                header("Location: profile.php"); // Redirect user to the profile.php
         }
     }
 

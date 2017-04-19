@@ -6,21 +6,32 @@ require_once('init.php');
 class App{
 
     public $articles = [];
+    public $categories = [];
     //public $database;
 
     // Default sorting
     // public static $by = 'name';
 
     function __construct(){
-        $this->populate();
+        $this->populateArticles();
+        $this->populateCategories();
     }
 
     // Creating articles from database-content
-    private function populate(){
+    private function populateArticles(){
         $articles = $this->fetchArticles();
 
         foreach($articles as $key => $row){//something wrong here as customers doesnt get created properly -> fixed
           $this->articles[$row['id']] = new Article($row['id'], $row['datetime'], $row['heading'], $row['text'], $row['category'], $row['rating'], $row['publisher']);
+        }//foreach
+    }
+    
+    // Creating categories from database-content
+    private function populateCategories(){
+        $categories = $this->fetchCategories();
+
+        foreach($categories as $key => $row){
+          $this->categories[$row['id']] = new Category($row['id'], $row['category']);
         }//foreach
     }
 
@@ -34,10 +45,20 @@ class App{
             return $result;
     }
     
+    public function fetchCategories(){
+        global $database;
+        // fetch all the categories
+        $query = "SELECT * FROM categories";
+        $result = $database->conn->query($query)->fetchAll();
+        if (!$result)
+            die('Query failed:' . $database->conn->errorInfo()[2]);
+            return $result;
+    }
+    
     public function Login($username, $password){
         global $database;
         try {
-            $query = $database->conn->prepare("SELECT user_id FROM users WHERE (username=:username OR email=:username) AND password=:password");
+            $query = $database->conn->prepare("SELECT user_id FROM users WHERE username=:username AND password=:password");
             $query->bindParam("username", $username, PDO::PARAM_STR);
             $enc_password = hash('sha256', $password);
             $query->bindParam("password", $enc_password, PDO::PARAM_STR);
@@ -56,7 +77,7 @@ class App{
     public function UserDetails($user_id){
         global $database;
         try {
-            $query = $database->conn->prepare("SELECT user_id, username, first_name, surname, email FROM users WHERE user_id=:user_id");
+            $query = $database->conn->prepare("SELECT user_id, username, first_name, surname, email, usertype FROM users WHERE user_id=:user_id");
             $query->bindParam("user_id", $user_id, PDO::PARAM_STR);
             $query->execute();
             if ($query->rowCount() > 0) {
@@ -64,6 +85,19 @@ class App{
             }
         } catch (PDOException $e) {
             exit($e->getMessage());
+        }
+    }
+    
+    public function search($search){
+        global $database;
+        $sql = "SELECT id, heading, text FROM articles WHERE heading LIKE '%" . $search . "%' OR text LIKE '%" . $search ."%'";
+        $query = $database->conn->prepare( $sql );
+        $result = $query->execute( array( $search ) );
+        
+        if ($query->rowCount() > 0) {
+            return $query->fetchAll(PDO::FETCH_ASSOC);
+        } else {
+            return false;
         }
     }
    /*
