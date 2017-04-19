@@ -117,14 +117,16 @@ if (!empty($_POST['btnCategory'])) {
                     echo $article->get_text();
                     echo "<br>";
                     echo "<a class='btn btn-danger' href='" . $_SERVER['PHP_SELF'] . "?deleteArticle=" . $article->get_id() . "'>Delete</a>";
-                    echo "<a class='btn btn-primary' href='edit.php?editArticle=" . $article->get_id() . "' data-toggle='modal' data-target='#myModal'>Edit</a>";
+                    echo "<a class='btn btn-primary' href='edit.php?editArticle=" . $article->get_id() . "'>Edit</a>";
+                    // data-toggle='modal' data-target='#myModal' <-- Modal stuff
                     echo "<br>";
+                    
                 }
             }
             
             ?>
             <!-- Modal -->
-              <div class="modal fade" id="myModal" role="dialog">
+              <!--div class="modal fade" id="myModal" role="dialog">
                 <div class="modal-dialog modal-lg">
                   <div class="modal-content">
                     <div class="modal-header">
@@ -138,7 +140,7 @@ if (!empty($_POST['btnCategory'])) {
                     </div>
                   </div>
                 </div>
-              </div>
+              </div-->
         </div>
         <?php if($user->usertype == 1) {
             
@@ -164,7 +166,7 @@ if (!empty($_POST['btnCategory'])) {
                     $newsInCat = $database->categoryCount($category->get_category());
                     echo $newsInCat . ' news article(s) published in this category';
                     echo "<br>";
-                    echo "<a class='btn btn-danger' href='" . $_SERVER['PHP_SELF'] . "?deleteCategory=" . $category->get_id() . "'>Delete</a>";
+                    echo "<a class='btn btn-danger' href='" . $_SERVER['PHP_SELF'] . "?deleteCategory=" . $category->get_category() . "'>Delete</a>";
                     echo "<br>";
             }
     

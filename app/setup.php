@@ -118,10 +118,13 @@ class DB {
         $result = $query->execute( array( ':id'=>$id ) );
     }
     
-    public function deleteCategory($id){
-        $sql = "DELETE FROM categories WHERE id = :id";
+    public function deleteCategory($category){
+        $sql = "DELETE categories , articles  FROM categories  INNER JOIN articles  
+WHERE categories.category=articles.category and categories.category = :category";
         $query = $this->conn->prepare( $sql );
-        $result = $query->execute( array( ':id'=>$id ) );
+        $result = $query->execute( array( ':category'=>$category ) );
+        
+
     }
     
     public function updateNewsArticle($id, $heading, $text, $category){
