@@ -15,7 +15,9 @@ require_once('app/app.php');
 </head>
 <body>
    <?php
-       echo "<pre>";
+        echo $app->UserDetails(1);
+    
+       /* echo "<pre>";
             //print_r($app->articles);
         foreach($app->articles as $article){    
             echo $article->get_heading();
@@ -23,7 +25,7 @@ require_once('app/app.php');
             echo $article->get_text();
             echo "<br>";
             }
-        echo "</pre>";
+        echo "</pre>"; */
     ?>
 </body>
 </html>

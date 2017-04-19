@@ -56,7 +56,7 @@ class App{
     public function UserDetails($user_id){
         global $database;
         try {
-            $query = $database->conn->prepare("SELECT user_id, name, username, email FROM users WHERE user_id=:user_id");
+            $query = $database->conn->prepare("SELECT user_id, username, first_name, surname, email FROM users WHERE user_id=:user_id");
             $query->bindParam("user_id", $user_id, PDO::PARAM_STR);
             $query->execute();
             if ($query->rowCount() > 0) {
