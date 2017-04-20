@@ -22,6 +22,11 @@ if(isset($_GET['deleteCategory'])){
     header("Location: profile.php");
     }
 
+if(isset($_GET['deleteUser'])){
+    $database->deleteUser($_GET['deleteUser']);
+    header("Location: profile.php");
+    }
+
 if(isset($_GET['editArticle'])){
     //header("Location: edit.php");
     }
@@ -29,6 +34,7 @@ if(isset($_GET['editArticle'])){
 $user = $app->UserDetails($_SESSION['user_id']); // get user details
  
 $article_error_message = '';
+$editprofile_error_message = '';
 
 
 if (!empty($_POST['btnArticle'])) { 
@@ -39,8 +45,31 @@ if (!empty($_POST['btnArticle'])) {
             } else if (!isset($_POST['category'])) {
                 $article_error_message = 'Category field is required!';
             } else {
-                $user_id = $database->insertNewsArticle($_POST['heading'], $_POST['text'], $_POST['category'], $_SESSION['user_id']);
+                $user_id = $database->insertNewsArticle($_POST['heading'], $_POST['text'], $_POST['category'], $user->username);
                 header("Location: profile.php"); //?upload=true
+        }
+    }
+
+if (!empty($_POST['btnEditProfile'])) { 
+            if ($_POST['username'] == "") {
+                $editprofile_error_message = 'Username field is required!';
+            } else if ($_POST['password'] == "") {
+                $editprofile_error_message = 'Password field is required!';
+            } else if ($_POST['email'] == "") {
+                $editprofile_error_message = 'Email field is required!';
+            } else if ($_POST['first_name'] == "") {
+                $editprofile_error_message = 'First name field is required!';
+            } else if ($_POST['surname'] == "") {
+                $editprofile_error_message = 'Surname field is required!';
+            /*} else if ($app->isUsername($_POST['username'])) {
+                $register_error_message = 'Username is already in use!';
+            } else if (!filter_var($_POST['email'], FILTER_VALIDATE_EMAIL)) {
+                $register_error_message = 'Invalid email address!';
+            } else if ($app->isEmail($_POST['email'])) {
+                $register_error_message = 'Email is already in use!'; */
+            } else {
+                $user_id = $database->editUser($_SESSION['user_id'], $_POST['username'], $_POST['password'], $_POST['first_name'], $_POST['surname'], $_POST['email']);
+                header("Location: profile.php"); // Redirect user to the profile.php
         }
     }
 
@@ -48,6 +77,8 @@ if (!empty($_POST['btnCategory'])) {
     $database->insertCategory($_POST['category']);
     header("Location: profile.php");
 }
+
+
 
 ?>
 <!doctype html>
@@ -112,7 +143,7 @@ if (!empty($_POST['btnCategory'])) {
             <?php
             
             foreach($app->articles as $article){    
-                if ($article->get_publisher() == $_SESSION['user_id']){
+                if ($article->get_publisher() == $user->username){
                     echo "<h3>" . $article->get_heading() . "</h3>";
                     echo $article->get_text();
                     echo "<br>";
@@ -141,6 +172,41 @@ if (!empty($_POST['btnCategory'])) {
                   </div>
                 </div>
               </div-->
+        </div>
+        
+    
+        <?php
+        if ($editprofile_error_message != "") {
+            echo '<div class="alert alert-danger"><strong>Error: </strong> ' . $editprofile_error_message . '</div>';
+        }
+        ?>
+        <div class="well">
+           <h2>Edit Profile</h2>
+            <form  method="post">
+                <div class="form-group">
+                    <label for="">Username</label>
+                    <input type="text" name="username" class="form-control" value="<?php echo $user->username ?>"/>
+                </div>
+                <div class="form-group">
+                    <label for="">Password</label>
+                    <input type="password" name="password" class="form-control"/>
+                </div>
+                <div class="form-group">
+                    <label for="">Email</label>
+                    <input type="email" name="email" class="form-control" value="<?php echo $user->email ?>"/>
+                </div>
+                <div class="form-group">
+                    <label for="">First name</label>
+                    <input type="text" name="first_name" class="form-control" value="<?php echo $user->first_name ?>"/>
+                </div>
+                <div class="form-group">
+                    <label for="">Surname</label>
+                    <input type="text" name="surname" class="form-control" value="<?php echo $user->surname ?>"/>
+                </div>
+                <div class="form-group">
+                    <input type="submit" name="btnEditProfile" class="btn btn-primary" value="Update profile"/>
+                </div>
+            </form>
         </div>
         <?php if($user->usertype == 1) {
             
@@ -181,8 +247,23 @@ if (!empty($_POST['btnCategory'])) {
                     echo '<input type="submit" name="btnCategory" class="btn btn-primary" value="Submit"/>';
                 echo '</div>';
             echo '</form>';
+            echo '</div>';
+        
+            echo '<div class="well">';
+            echo '<h2>Delete users</h2>';
+    
+            foreach($app->users as $user){    
+                if ($user->get_id() != $_SESSION['user_id']){
+                    echo "<h3>" . $user->get_username() . "</h3>";
+                    echo "<a class='btn btn-danger' href='" . $_SERVER['PHP_SELF'] . "?deleteUser=" . $user->get_id() . "'>Delete</a>";
+                    echo "<br>";
+                    }
+            }
             
-        }
+            echo '</div>';
+            }
+            
+            
         
         ?>
     </div>

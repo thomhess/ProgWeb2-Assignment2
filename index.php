@@ -2,8 +2,21 @@
 // Fetching the application
 require_once('app/app.php');
 
+if(isset($_GET['sort'])){
+    $app->sorting($app->articles, $_GET['sort']);
+    setcookie('preferred_rating', $_GET['sort'], time() + (86400 * 30), "/");
+}
 
+if(isset($_COOKIE['preferred_rating'])) {
+    if(!isset($_GET['sort'])){
+        header("Location: index.php?sort=" . $_COOKIE['preferred_rating']);
+    }
+}
 
+if(isset($_GET['upvote'])){
+    $database->updateRating($_GET['upvote'], $app->articles[$_GET['upvote']]->get_rating());
+    header("Location: index.php");
+    }
 ?>
 
 
@@ -23,16 +36,30 @@ require_once('app/app.php');
     </form>
     <?php
         //echo $app->Login('thomhess', '123');
-    
-       echo "<pre>";
+        echo '<a href="' . $_SERVER['PHP_SELF'] . '?sort=published">Published</a>';
+        echo '<a href="' . $_SERVER['PHP_SELF'] . '?sort=rating">Rating</a>';
+       echo '<div class="container">';
             //print_r($app->articles);
         foreach($app->articles as $article){    
+            echo '<div class="well">';
             echo $article->get_heading();
             echo "<br>";
             echo $article->get_text();
             echo "<br>";
+            echo 'Category: ' . $article->get_category();
+            echo "<br>";
+            echo 'Published by: ' . $article->get_publisher();
+            echo "<br>";
+            echo 'Rating: ' . $article->get_rating();
+            echo "<br>";
+            echo "<a class='btn btn-primary' href='" . $_SERVER['PHP_SELF'] . '?upvote=' . $article->get_id() . "'>Upvote</a>";
+            echo '</div>';
+            
+            
             }
-        echo "</pre>";
+        echo '</div>';
     ?>
 </body>
 </html>
+
+

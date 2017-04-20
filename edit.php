@@ -18,9 +18,6 @@ if(isset($_GET['editArticle'])){
         die('Invalid article');
     }
 
-
-
-
 foreach($app->articles as $article){
     if ($article->get_id() == $articlenumber){
         $heading = $article->get_heading();
@@ -47,11 +44,14 @@ if (!empty($_POST['btnArticleEdit'])) {
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Document</title>
+    <title>Edit</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
 </head>
 <body>
+<div class="container">
+<h1>Edit article</h1>
 <div class="well">
-    <form action="edit.php" method="post">
+    <form  method="post">
         <?php
             if ($updatearticle_error_message != "") {
                 echo '<div class="alert alert-danger"><strong>Error: </strong> ' . $updatearticle_error_message . '</div>';
@@ -78,6 +78,7 @@ if (!empty($_POST['btnArticleEdit'])) {
             <input type="submit" name="btnArticleEdit" class="btn btn-primary" value="Publish"/>
         </div>
     </form>
+</div>
 </div> 
 </body>
 </html>

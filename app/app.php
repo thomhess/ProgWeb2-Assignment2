@@ -7,14 +7,15 @@ class App{
 
     public $articles = [];
     public $categories = [];
+    public $users = [];
     //public $database;
 
     // Default sorting
-    // public static $by = 'name';
 
     function __construct(){
         $this->populateArticles();
         $this->populateCategories();
+        $this->populateUsers();
     }
 
     // Creating articles from database-content
@@ -34,6 +35,15 @@ class App{
           $this->categories[$row['id']] = new Category($row['id'], $row['category']);
         }//foreach
     }
+    
+    // Creating users from database-content
+    private function populateUsers(){
+        $users = $this->fetchUsers();
+
+        foreach($users as $key => $row){
+          $this->users[$row['user_id']] = new User($row['user_id'], $row['username'], $row['first_name'], $row['surname'], $row['email']);
+        }//foreach
+    }
 
     public function fetchArticles(){
         global $database;
@@ -49,6 +59,16 @@ class App{
         global $database;
         // fetch all the categories
         $query = "SELECT * FROM categories";
+        $result = $database->conn->query($query)->fetchAll();
+        if (!$result)
+            die('Query failed:' . $database->conn->errorInfo()[2]);
+            return $result;
+    }
+    
+    public function fetchUsers(){
+        global $database;
+        // fetch all the categories
+        $query = "SELECT * FROM users";
         $result = $database->conn->query($query)->fetchAll();
         if (!$result)
             die('Query failed:' . $database->conn->errorInfo()[2]);
@@ -100,54 +120,31 @@ class App{
             return false;
         }
     }
-   /*
+   
 
 
 
     // Sorting withdrawals and deposits based on asc/desc and type
-    public function sorting(&$array, $by, $order){
+    public function sorting(&$array, $by){
 
-        switch($order){
-            case 'asc' :
-                switch($by) {
-                    case 'date' :
-                        usort($array, "app::ranking_date");
-                        break;
-                    case 'amount' :
-                        usort($array, "app::ranking_amount");
-                        break;
-                    }
+        switch($by) {
+            case 'published' :
+                usort($array, "app::ranking_published");
                 break;
-            case 'desc' :
-                switch($by) {
-                    case 'date' :
-                        usort($array, "app::ranking_date_desc");
-                        break;
-                    case 'amount' :
-                        usort($array, "app::ranking_amount_desc");
-                        break;
-                    }
+            case 'rating' :
+                usort($array, "app::ranking_rating");
                 break;
-        }
+            }
     }
 
     // Functions for the usort to use in sorting
-    public function ranking_date($a, $b){
-        return $a->date - $b->date;
+    public function ranking_published($a, $b){
+        return $b->datetime - $a->datetime;
     }
 
-    public function ranking_amount($a, $b) {
-        return $a->value - $b->value;
+    public function ranking_rating($a, $b) {
+        return $b->rating - $a->rating;
     }
 
-    public function ranking_date_desc($a, $b){
-        return $b->date - $a->date;
-    }
-
-    public function ranking_amount_desc($a, $b) {
-        return $b->value - $a->value;
-    }
-
-*/
 }
 $app = new App();

@@ -59,7 +59,7 @@ class DB {
             heading VARCHAR(50),
             text TEXT(1000),
             category VARCHAR(10),
-            rating FLOAT(2,1),
+            rating int(11),
             publisher VARCHAR(15))';
         if ($this->conn->exec($query)===false)
           die("CREATE articles FAIL" . $this->conn->errorInfo()[2]);
@@ -73,19 +73,45 @@ class DB {
 
     }
     
+    
+    /* Inserting default data into tables created */
     public function insertDefaultData(){
         // Insert data into articles
-        $query = "INSERT INTO articles(datetime, heading, text, category, rating, publisher) VALUES('1492009049', 'Hei verden', 'Her skal det stå en lang eller kort tekst, denne gangen blir den kort', 'sport', '4.5', 'thomhess')";
+        $query = "INSERT INTO articles(datetime, heading, text, category, rating, publisher) VALUES('1492009049', 'Hello world!', 'This is the very first article, isnt that awesome?', 'News', '0', 'Admin')";
+        if ($this->conn->exec($query)===false)
+            die("INSERT article FAIL" . $this->conn->errorInfo()[2]);
+        
+        $query = "INSERT INTO articles(datetime, heading, text, category, rating, publisher) VALUES('1492009200', 'Fake News', 'This is a really fake news article, inspired by the 45th president of the United States.', 'News', '0', 'testuser')";
         if ($this->conn->exec($query)===false)
             die("INSERT article FAIL" . $this->conn->errorInfo()[2]);
         
         // Insert data into users
-        $query = "INSERT INTO users(username, password, first_name, surname, email, usertype) VALUES('thomhess', '123', 'fornavn', 'etternavn', 'e@mail', '1')";
+        $query = "INSERT INTO users(username, password, first_name, surname, email, usertype) VALUES('admin', '" . hash('sha256', '123') . "', 'Admin', 'Bruker', 'admin@nettavis.no', '1')";
+        if ($this->conn->exec($query)===false)
+            die("INSERT USER FAIL" . $this->conn->errorInfo()[2]);
+        
+        $query = "INSERT INTO users(username, password, first_name, surname, email, usertype) VALUES('thomhess', '" . hash('sha256', '123') . "', 'Thomas', 'Hesselberg', 'thomhes@stud.ntnu.no', '1')";
+        if ($this->conn->exec($query)===false)
+            die("INSERT USER FAIL" . $this->conn->errorInfo()[2]);
+        
+        $query = "INSERT INTO users(username, password, first_name, surname, email, usertype) VALUES('kolloen', '" . hash('sha256', '123') . "', 'Øivind', 'Kolloen', 'oeivind.kolloen@ntnu.no', '2')";
+        if ($this->conn->exec($query)===false)
+            die("INSERT USER FAIL" . $this->conn->errorInfo()[2]);
+        
+        $query = "INSERT INTO users(username, password, first_name, surname, email, usertype) VALUES('testuser', '" . hash('sha256', '123') . "', 'Test', 'Bruker', 'testbruker@test.no', '2')";
         if ($this->conn->exec($query)===false)
             die("INSERT USER FAIL" . $this->conn->errorInfo()[2]);
         
         // Insert data into categories
         $query = "INSERT INTO categories(category) VALUES('Sport')";
+        if ($this->conn->exec($query)===false)
+            die("INSERT USER FAIL" . $this->conn->errorInfo()[2]);
+        
+        $query = "INSERT INTO categories(category) VALUES('News')";
+        if ($this->conn->exec($query)===false)
+            die("INSERT USER FAIL" . $this->conn->errorInfo()[2]);
+        
+        $query = "INSERT INTO categories(category) VALUES('Other')";
         if ($this->conn->exec($query)===false)
             die("INSERT USER FAIL" . $this->conn->errorInfo()[2]);
     }//insertDefaultData
@@ -95,6 +121,12 @@ class DB {
         $sql = "INSERT INTO users ( username, password, first_name, surname, email, usertype) VALUES ( :username, :password, :first_name, :surname, :email, :usertype )";
         $query = $this->conn->prepare( $sql );
         $result = $query->execute( array( ':username'=>$username, ':password'=>hash('sha256', $password), ':first_name'=>$first_name, ':surname'=>$surname, ':email'=>$email, ':usertype'=>$usertype ) );
+    }
+    
+    public function editUser($id, $username, $password, $first_name, $surname, $email){
+        $sql = "UPDATE users SET username=:username, password=:password, first_name=:first_name, surname=:surname, email=:email WHERE user_id=:id";
+        $query = $this->conn->prepare( $sql );
+        $result = $query->execute( array( ':id'=>$id, ':username'=>$username, ':password'=>hash('sha256', $password), ':first_name'=>$first_name, ':surname'=>$surname, ':email'=>$email ) );
     }
     
     public function insertNewsArticle($heading, $text, $category, $publisher) {
@@ -123,8 +155,12 @@ class DB {
 WHERE categories.category=articles.category and categories.category = :category";
         $query = $this->conn->prepare( $sql );
         $result = $query->execute( array( ':category'=>$category ) );
-        
-
+    }
+    
+    public function deleteUser($id){
+        $sql = "DELETE FROM users WHERE user_id = :id";
+        $query = $this->conn->prepare( $sql );
+        $result = $query->execute( array( ':id'=>$id ) );
     }
     
     public function updateNewsArticle($id, $heading, $text, $category){
@@ -138,6 +174,13 @@ WHERE categories.category=articles.category and categories.category = :category"
         $query = $this->conn->prepare( $sql );
         $result = $query->execute( array( ':category'=>$category ) );
         return $query->rowCount();
+    }
+    
+    public function updateRating($id, $rating){
+        $newrating = $rating + 1;
+        $sql = "UPDATE articles SET rating=:newrating WHERE id=:id";
+        $query = $this->conn->prepare( $sql );
+        $result = $query->execute( array( ':id'=>$id, ':newrating'=>$newrating ) );
     }
 
 }//class

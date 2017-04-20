@@ -25,7 +25,7 @@ if (!empty($_POST['btnRegister'])) {
             } else if ($app->isEmail($_POST['email'])) {
                 $register_error_message = 'Email is already in use!'; */
             } else {
-                $user_id = $database->insertNewUser($_POST['username'], $_POST['password'], $_POST['first_name'], $_POST['surname'], $_POST['email'], 1);
+                $user_id = $database->insertNewUser($_POST['username'], $_POST['password'], $_POST['first_name'], $_POST['surname'], $_POST['email'], 2);
                 // set session and redirect user to the profile page
                 $_SESSION['user_id'] = $user_id; // Set Session
                 header("Location: profile.php"); // Redirect user to the profile.php
