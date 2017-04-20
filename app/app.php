@@ -110,7 +110,7 @@ class App{
     
     public function search($search){
         global $database;
-        $sql = "SELECT id, heading, text FROM articles WHERE heading LIKE '%" . $search . "%' OR text LIKE '%" . $search ."%'";
+        $sql = "SELECT id, heading, text, category, publisher, rating FROM articles WHERE heading LIKE '%" . $search . "%' OR text LIKE '%" . $search ."%'";
         $query = $database->conn->prepare( $sql );
         $result = $query->execute( array( $search ) );
         

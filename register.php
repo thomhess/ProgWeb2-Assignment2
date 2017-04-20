@@ -40,10 +40,18 @@ if (!empty($_POST['btnRegister'])) {
 <head>
     <meta charset="UTF-8">
     <title>Register</title>
+    <link rel="stylesheet" type="text/css" href="style.css">
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous"> 
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.0/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 </head>
 <body>
+<?php include_once "nav.php";?>
+<div class="container">
+   
     <h1>Registration</h1>
-    
+    <div class="well">
     <?php
     if ($register_error_message != "") {
         echo '<div class="alert alert-danger"><strong>Error: </strong> ' . $register_error_message . '</div>';
@@ -74,48 +82,7 @@ if (!empty($_POST['btnRegister'])) {
             <input type="submit" name="btnRegister" class="btn btn-primary" value="Register"/>
         </div>
     </form>
-     
-     <!--form name="registration" action="register.php" method="POST">
-      <label for='username'>Username: </label>
-      <input type="text" name="username"/>
-      <label for='password'>Password: </label>
-      <input type="password" name="password"/>
-      <label for='first_name'>First name: </label>
-      <input type="text" name="first_name"/>
-      <label for='surname'>Surname: </label>
-      <input type="text" name="surname"/>
-      <label for='email'>Email: </label>
-      <input type="text" name="email"/>
-      <br/>
-      <button type="submit">Submit</button>
-     </form-->
-     
-    <?php
-       
-        
-        /*
-        global $database;
-    
-        $form = $_POST;
-        $username = $form[ 'username' ];
-        $password = $form[ 'password' ];
-        $first_name = $form[ 'first_name' ];
-        $surname = $form[ 'surname' ];
-        $email = $form[ 'email' ];
-        $usertype = 1;
-        
-        
-
-        $sql = "INSERT INTO users ( username, password, first_name, surname, email, usertype) VALUES ( :username, :password, :first_name, :surname, :email, :usertype )";
-        $query = $database->conn->prepare( $sql );
-        $result = $query->execute( array( ':username'=>$username, ':password'=>$password, ':first_name'=>$first_name, ':surname'=>$surname, ':email'=>$email, ':usertype'=>$usertype ) );
-        if ( $result ){
-          echo "<p>Bruker opprettet!</p>";
-        } else {
-          echo "<p>Sorry, there has been a problem inserting your details. Please contact admin.</p>";
-        }
-        
-        */
-    ?>
+     </div>
+</div>
 </body>
 </html>

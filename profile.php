@@ -86,13 +86,15 @@ if (!empty($_POST['btnCategory'])) {
 <head>
     <meta charset="UTF-8">
     <title>Profile</title>
+    <link rel="stylesheet" type="text/css" href="style.css">
     <!-- Latest compiled and minified CSS -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous"> 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.0/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 
 </head>
 <body>
+<?php include_once "nav.php";?>
     <div class="container">
         <div class="well">
             <h2>
@@ -148,7 +150,7 @@ if (!empty($_POST['btnCategory'])) {
                     echo $article->get_text();
                     echo "<br>";
                     echo "<a class='btn btn-danger' href='" . $_SERVER['PHP_SELF'] . "?deleteArticle=" . $article->get_id() . "'>Delete</a>";
-                    echo "<a class='btn btn-primary' href='edit.php?editArticle=" . $article->get_id() . "'>Edit</a>";
+                    echo "<a class='btn btn-link' href='edit.php?editArticle=" . $article->get_id() . "'>Edit</a>";
                     // data-toggle='modal' data-target='#myModal' <-- Modal stuff
                     echo "<br>";
                     

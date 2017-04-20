@@ -50,7 +50,7 @@ if(isset($_GET['upvote'])){
     <?php
             //print_r($app->articles);
         foreach($app->articles as $article){    
-            echo '<div class="well newsitem">';
+            echo '<div class="well well-lg newsitem">';
             echo '<h3>' . $article->get_heading() . '</h3>';
             echo $article->get_text();
             echo "<br>";
@@ -61,13 +61,10 @@ if(isset($_GET['upvote'])){
             echo 'Rating: ' . $article->get_rating();
             echo "<br>";
             echo "<a class='btn btn-primary' href='" . $_SERVER['PHP_SELF'] . '?upvote=' . $article->get_id() . "'>Upvote</a>";
-            echo '</div>';
-            
-            
+            echo '</div>';  
             }
     ?>
 </div>
+<?php include_once "footer.php";?>
 </body>
 </html>
-
-
