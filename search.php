@@ -15,6 +15,6 @@ if (!empty($_GET['search'])){
             echo '<br>';
         }
     } else {
-        echo "No mathascas";
+        echo "No matches";
     }
 }

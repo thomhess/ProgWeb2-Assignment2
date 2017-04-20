@@ -5,6 +5,12 @@ require_once('app/app.php');
 // Start Session
 session_start();
 
+// check user login
+if(!empty($_SESSION['user_id']))
+{
+    header("Location: profile.php");
+}
+
 $login_error_message = "";
 
 // check Login request

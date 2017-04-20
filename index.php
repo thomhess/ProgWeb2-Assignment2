@@ -2,6 +2,9 @@
 // Fetching the application
 require_once('app/app.php');
 
+// Start Session
+session_start();
+
 if(isset($_GET['sort'])){
     $app->sorting($app->articles, $_GET['sort']);
     setcookie('preferred_rating', $_GET['sort'], time() + (86400 * 30), "/");
@@ -25,25 +28,30 @@ if(isset($_GET['upvote'])){
 <head>
     <meta charset="UTF-8">
     <title>Index</title>
+    <link rel="stylesheet" type="text/css" href="style.css">
     <!-- Latest compiled and minified CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous"> 
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.0/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 
 </head>
 <body>
-    <form action="search.php" method="get">
-        <input type="text" name="search" placeholder="Search.." value="<?php echo isset($_GET['search']) ? $_GET['search'] : ''; ?>">
-        <input type="submit" value="Søk">
-    </form>
+<?php include_once "nav.php";?>
+<div class="container">
+    <h5 class="text-right">SORT BY</h5>
+    <div class="btn-group pull-right" role="group" aria-label="...">
+        <?php
+            echo '<a class="btn btn-default" href="' . $_SERVER['PHP_SELF'] . '?sort=published">Published</a>';
+            echo '<a class="btn btn-default" href="' . $_SERVER['PHP_SELF'] . '?sort=rating">Rating</a>'; 
+        ?>
+    </div>
+</div>
+<div class="container newslist"> 
     <?php
-        //echo $app->Login('thomhess', '123');
-        echo '<a href="' . $_SERVER['PHP_SELF'] . '?sort=published">Published</a>';
-        echo '<a href="' . $_SERVER['PHP_SELF'] . '?sort=rating">Rating</a>';
-       echo '<div class="container">';
             //print_r($app->articles);
         foreach($app->articles as $article){    
-            echo '<div class="well">';
-            echo $article->get_heading();
-            echo "<br>";
+            echo '<div class="well newsitem">';
+            echo '<h3>' . $article->get_heading() . '</h3>';
             echo $article->get_text();
             echo "<br>";
             echo 'Category: ' . $article->get_category();
@@ -57,8 +65,8 @@ if(isset($_GET['upvote'])){
             
             
             }
-        echo '</div>';
     ?>
+</div>
 </body>
 </html>
 
