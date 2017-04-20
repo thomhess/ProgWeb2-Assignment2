@@ -45,10 +45,16 @@ if (!empty($_POST['btnArticleEdit'])) {
 <head>
     <meta charset="UTF-8">
     <title>Edit</title>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="style.css">
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous"> 
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.0/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 </head>
 <body>
+<?php include_once "nav.php";?>
 <div class="container">
+<div class="row col-lg-8 col-lg-offset-2">
 <h1>Edit article</h1>
 <div class="well">
     <form  method="post">
@@ -78,6 +84,7 @@ if (!empty($_POST['btnArticleEdit'])) {
             <input type="submit" name="btnArticleEdit" class="btn btn-primary" value="Publish"/>
         </div>
     </form>
+</div>
 </div>
 </div> 
 </body>

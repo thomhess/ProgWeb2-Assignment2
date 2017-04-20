@@ -5,8 +5,10 @@ require_once('app/app.php');
 // Start Session
 session_start();
 
+// Defined variable for error message
 $register_error_message = '';
 
+// Form validation for registered user
 if (!empty($_POST['btnRegister'])) { 
             if ($_POST['username'] == "") {
                 $register_error_message = 'Username field is required!';
@@ -49,7 +51,7 @@ if (!empty($_POST['btnRegister'])) {
 <body>
 <?php include_once "nav.php";?>
 <div class="container">
-   
+    <div class="row col-lg-6 col-lg-offset-3">
     <h1>Registration</h1>
     <div class="well">
     <?php
@@ -82,6 +84,7 @@ if (!empty($_POST['btnRegister'])) {
             <input type="submit" name="btnRegister" class="btn btn-primary" value="Register"/>
         </div>
     </form>
+     </div>
      </div>
 </div>
 </body>

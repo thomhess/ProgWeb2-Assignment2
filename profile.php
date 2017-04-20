@@ -12,23 +12,22 @@ if(empty($_SESSION['user_id']))
     header("Location: index.php");
 }
 
+// Calls deletion of article
 if(isset($_GET['deleteArticle'])){
     $database->deleteNewsArticle($_GET['deleteArticle']);
     header("Location: profile.php");
     }
 
+// Calls deletion of category
 if(isset($_GET['deleteCategory'])){
     $database->deleteCategory($_GET['deleteCategory']);
     header("Location: profile.php");
     }
 
+// Calls deletion of user
 if(isset($_GET['deleteUser'])){
     $database->deleteUser($_GET['deleteUser']);
     header("Location: profile.php");
-    }
-
-if(isset($_GET['editArticle'])){
-    //header("Location: edit.php");
     }
 
 $user = $app->UserDetails($_SESSION['user_id']); // get user details
@@ -96,6 +95,8 @@ if (!empty($_POST['btnCategory'])) {
 <body>
 <?php include_once "nav.php";?>
     <div class="container">
+      <div class="row col-lg-8 col-lg-offset-2">
+       
         <div class="well">
             <h2>
                 Profile
@@ -142,42 +143,32 @@ if (!empty($_POST['btnCategory'])) {
         </div>
         <div class="well">
             <h2>My articles</h2>
+            <div class="row">
             <?php
             
             foreach($app->articles as $article){    
                 if ($article->get_publisher() == $user->username){
+                    echo '<div class="col-lg-6">';
                     echo "<h3>" . $article->get_heading() . "</h3>";
                     echo $article->get_text();
                     echo "<br>";
+                    echo 'Category: ' . $article->get_category();
+                    echo "<br>";
                     echo "<a class='btn btn-danger' href='" . $_SERVER['PHP_SELF'] . "?deleteArticle=" . $article->get_id() . "'>Delete</a>";
                     echo "<a class='btn btn-link' href='edit.php?editArticle=" . $article->get_id() . "'>Edit</a>";
-                    // data-toggle='modal' data-target='#myModal' <-- Modal stuff
                     echo "<br>";
+                    echo '</div>';
                     
                 }
             }
             
             ?>
-            <!-- Modal -->
-              <!--div class="modal fade" id="myModal" role="dialog">
-                <div class="modal-dialog modal-lg">
-                  <div class="modal-content">
-                    <div class="modal-header">
-                      <button type="button" class="close" data-dismiss="modal">&times;</button>
-                      <h4 class="modal-title">Modal Header</h4>
-                    </div>
-                    <div class="modal-body">
-                    </div>
-                    <div class="modal-footer">
-                      <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                    </div>
-                  </div>
-                </div>
-              </div-->
+            </div>
         </div>
         
     
         <?php
+        // Error message if any input is wrong
         if ($editprofile_error_message != "") {
             echo '<div class="alert alert-danger"><strong>Error: </strong> ' . $editprofile_error_message . '</div>';
         }
@@ -210,34 +201,57 @@ if (!empty($_POST['btnCategory'])) {
                 </div>
             </form>
         </div>
+        
+        
+        <!-- 
+        Admin panel
+        - All articles with edit and delete
+        - Categories with delete
+        - New category
+        - All users with delete
+        -->
+        
+        <!-- Makes sure only admins see this-->
         <?php if($user->usertype == 1) {
             
             echo "<h1>Admin panel</h1>";
     
             echo '<div class="well">';
             echo '<h2>All articles</h2>';
-            
-            foreach($app->articles as $article){    
+            echo '<div class="row">';
+            foreach($app->articles as $article){
+                    echo '<div class="col-lg-6">';
                     echo "<h3>" . $article->get_heading() . "</h3>";
                     echo $article->get_text();
                     echo "<br>";
                     echo "<a class='btn btn-danger' href='" . $_SERVER['PHP_SELF'] . "?deleteArticle=" . $article->get_id() . "'>Delete</a>";
                     echo "<br>";
+                    echo '</div>';
             }
             
             echo '</div>';
+            echo '</div>';
+    
+            // Categories section
             echo '<div class="well">';
             echo '<h2>Categories</h2>';
-    
+            echo '<div class="row">';
             foreach($app->categories as $category){    
+                    echo '<div class="col-lg-6">';
                     echo "<h3>" . $category->get_category() . "</h3>";
                     $newsInCat = $database->categoryCount($category->get_category());
                     echo $newsInCat . ' news article(s) published in this category';
                     echo "<br>";
                     echo "<a class='btn btn-danger' href='" . $_SERVER['PHP_SELF'] . "?deleteCategory=" . $category->get_category() . "'>Delete</a>";
                     echo "<br>";
+                    echo '</div>';
             }
+            echo '</div>';
+            
+            
+            // New category //
     
+            // Category form
             echo '<h2>New category</h2>';
             
             echo '<form action="profile.php" method="post">';
@@ -251,23 +265,24 @@ if (!empty($_POST['btnCategory'])) {
             echo '</form>';
             echo '</div>';
         
+            // Users with delete
             echo '<div class="well">';
             echo '<h2>Delete users</h2>';
-    
+            echo '<div class="row">';
             foreach($app->users as $user){    
                 if ($user->get_id() != $_SESSION['user_id']){
+                    echo '<div class="col-lg-6">';
                     echo "<h3>" . $user->get_username() . "</h3>";
                     echo "<a class='btn btn-danger' href='" . $_SERVER['PHP_SELF'] . "?deleteUser=" . $user->get_id() . "'>Delete</a>";
                     echo "<br>";
+                    echo '</div>';
                     }
             }
-            
+            echo '</div>';
             echo '</div>';
             }
-            
-            
-        
         ?>
+    </div>
     </div>
     
 </body>

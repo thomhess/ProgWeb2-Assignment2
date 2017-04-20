@@ -25,3 +25,7 @@ html {
   height: 160px;
   background-color: #f5f5f5;
 }
+
+.right {
+    float:right; 
+}

@@ -44,7 +44,8 @@ class App{
           $this->users[$row['user_id']] = new User($row['user_id'], $row['username'], $row['first_name'], $row['surname'], $row['email']);
         }//foreach
     }
-
+    
+    // Fetching articles from database to use in populate
     public function fetchArticles(){
         global $database;
         // fetch all the articles
@@ -55,6 +56,7 @@ class App{
             return $result;
     }
     
+    // Fetching categories from database to use in populate
     public function fetchCategories(){
         global $database;
         // fetch all the categories
@@ -65,6 +67,7 @@ class App{
             return $result;
     }
     
+    // Fetching users from database to use in populate
     public function fetchUsers(){
         global $database;
         // fetch all the categories
@@ -75,6 +78,7 @@ class App{
             return $result;
     }
     
+    // Method to check if user exists and return user id
     public function Login($username, $password){
         global $database;
         try {
@@ -94,6 +98,7 @@ class App{
         }
     }
     
+    // Method for returning user information
     public function UserDetails($user_id){
         global $database;
         try {
@@ -108,6 +113,7 @@ class App{
         }
     }
     
+    // Search method
     public function search($search){
         global $database;
         $sql = "SELECT id, heading, text, category, publisher, rating FROM articles WHERE heading LIKE '%" . $search . "%' OR text LIKE '%" . $search ."%'";
@@ -122,9 +128,7 @@ class App{
     }
    
 
-
-
-    // Sorting withdrawals and deposits based on asc/desc and type
+    // Sorting articles based on type
     public function sorting(&$array, $by){
 
         switch($by) {

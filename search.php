@@ -4,6 +4,9 @@
 require_once('app/app.php');
 require_once('app/init.php');
 
+// Start Session
+session_start();
+
 $count = 0;
 
 // Fetching upvote-thing and changing value
@@ -31,6 +34,7 @@ if(isset($_GET['upvote'])){
 
 <div class="container newslist"> 
 <?php
+    
 // Fetching all search results and making them into articles
 if (!empty($_GET['search'])){
     if ($app->search($_GET['search'])) { 
@@ -43,9 +47,9 @@ if (!empty($_GET['search'])){
             echo '<br>';
             echo 'Published by: ' . $article['publisher'];
             echo '<br>';
-            echo 'Rating: ' . $article['rating'];
-            echo '<br>';
+            echo "<hr>";
             echo "<a class='btn btn-primary' href='" . $_SERVER['PHP_SELF'] . '?search=' . $_GET['search'] .  '&upvote=' . $article['id'] . "'>Upvote</a>";
+            echo '<span class="right"><b>Rating: ' . $article['rating'] . '</b></span>';
             echo '</div>';
         }
     } else {

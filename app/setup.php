@@ -2,10 +2,11 @@
 require_once('app/dbinfo.php');
 
 class DB {
-
-    public $conn;
-
+    
+    public $conn; //Defines variable for database connection
+    
     public function __construct(){
+        // Connects to database
         try{
           $this->conn = new PDO("mysql:host=" . DB_HOST . ";dbname=" . DB_DATABASE . ";charset=utf8", DB_USER, DB_PASS);
         } catch(PDOException  $e) {
@@ -15,32 +16,31 @@ class DB {
         self::createDB();
         self::useDB();
         self::createTables();
-        //self::insertDefaultData();
+        self::insertDefaultData();  
 
     }//construct()
 
-
-
-
-
-
-
+    // Creates database
     public function createDB(){
         $query = 'CREATE DATABASE IF NOT EXISTS imt3851_db';
         if ($this->conn->exec($query)===false)
           die('Query failed:' . $this->conn->errorInfo()[2]);
     }
-
+    
+    // Uses database
     public function useDB(){
         if ($this->conn->exec("USE " . DB_DATABASE)===false)
           die('Can not select db:' . $this->conn->errorInfo()[2]);
     }
-
+    
+    // Closes database connection
     public function close_connection(){
         $this->conn = null;
     }//close_connection
-
+    
+    // Creates all the tables
     public function createTables(){
+        // Creates user table
         $query = 'CREATE TABLE IF NOT EXISTS users (
             user_id INT PRIMARY KEY AUTO_INCREMENT,
             username VARCHAR(15),
@@ -52,7 +52,7 @@ class DB {
         if ($this->conn->exec($query)===false)
           die("CREATE USER FAIL" . $this->conn->errorInfo()[2]);
 
-        // create the articles table
+        // Creates articles table
         $query = 'CREATE TABLE IF NOT EXISTS articles (
             id INT PRIMARY KEY AUTO_INCREMENT,
             datetime int(11),
@@ -64,7 +64,7 @@ class DB {
         if ($this->conn->exec($query)===false)
           die("CREATE articles FAIL" . $this->conn->errorInfo()[2]);
         
-        // create the categories table
+        // Creates categories table
         $query = 'CREATE TABLE IF NOT EXISTS categories (
             id INT PRIMARY KEY AUTO_INCREMENT,
             category VARCHAR(10))';
@@ -116,6 +116,7 @@ class DB {
             die("INSERT USER FAIL" . $this->conn->errorInfo()[2]);
     }//insertDefaultData
     
+    // Method for inserting new user in database
     public function insertNewUser($username, $password, $first_name, $surname, $email, $usertype){
         
         $sql = "INSERT INTO users ( username, password, first_name, surname, email, usertype) VALUES ( :username, :password, :first_name, :surname, :email, :usertype )";
@@ -123,12 +124,14 @@ class DB {
         $result = $query->execute( array( ':username'=>$username, ':password'=>hash('sha256', $password), ':first_name'=>$first_name, ':surname'=>$surname, ':email'=>$email, ':usertype'=>$usertype ) );
     }
     
+    // Method for editing existing user
     public function editUser($id, $username, $password, $first_name, $surname, $email){
         $sql = "UPDATE users SET username=:username, password=:password, first_name=:first_name, surname=:surname, email=:email WHERE user_id=:id";
         $query = $this->conn->prepare( $sql );
         $result = $query->execute( array( ':id'=>$id, ':username'=>$username, ':password'=>hash('sha256', $password), ':first_name'=>$first_name, ':surname'=>$surname, ':email'=>$email ) );
     }
     
+    // Method for inserting new article into database
     public function insertNewsArticle($heading, $text, $category, $publisher) {
         $currentTime = time();
         $defaultRating = '3';
@@ -137,6 +140,7 @@ class DB {
         $result = $query->execute( array( ':datetime'=>$currentTime, ':heading'=>$heading, ':text'=>$text, ':category'=>$category, ':rating'=>$defaultRating, ':publisher'=>$publisher ) );
     }
     
+    // Method for inserting new category
     public function insertCategory($category){
         
         $sql = "INSERT INTO categories ( category ) VALUES ( :category )";
@@ -144,12 +148,14 @@ class DB {
         $result = $query->execute( array( ':category'=>$category ) );
     }
     
+    // Method for deleting article
     public function deleteNewsArticle($id){
         $sql = "DELETE FROM articles WHERE id = :id";
         $query = $this->conn->prepare( $sql );
         $result = $query->execute( array( ':id'=>$id ) );
     }
     
+    // Method for deleting category
     public function deleteCategory($category){
         $sql = "DELETE categories , articles  FROM categories  INNER JOIN articles  
 WHERE categories.category=articles.category and categories.category = :category";
@@ -157,18 +163,21 @@ WHERE categories.category=articles.category and categories.category = :category"
         $result = $query->execute( array( ':category'=>$category ) );
     }
     
+    // Method for deleting user
     public function deleteUser($id){
         $sql = "DELETE FROM users WHERE user_id = :id";
         $query = $this->conn->prepare( $sql );
         $result = $query->execute( array( ':id'=>$id ) );
     }
     
+    // Method for updating news article
     public function updateNewsArticle($id, $heading, $text, $category){
         $sql = "UPDATE articles SET heading=:heading, text=:text, category=:category WHERE id=:id";
         $query = $this->conn->prepare( $sql );
         $result = $query->execute( array( ':id'=>$id, ':heading'=>$heading, ':text'=>$text, ':category'=>$category ) );
     }
     
+    // Method for counting the number of articles whithin category
     public function categoryCount($category){
         $sql = "SELECT id FROM articles WHERE category = :category";
         $query = $this->conn->prepare( $sql );
@@ -176,6 +185,7 @@ WHERE categories.category=articles.category and categories.category = :category"
         return $query->rowCount();
     }
     
+    // Method for updating the rating in database
     public function updateRating($id, $rating){
         $newrating = $rating + 1;
         $sql = "UPDATE articles SET rating=:newrating WHERE id=:id";

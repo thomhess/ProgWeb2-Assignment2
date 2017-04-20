@@ -42,9 +42,4 @@ class Article {
     public function get_publisher(){
         return $this->publisher;
     }
-    
-    // Setter for rating
-    public function set_rating(){
-        $this->rating = $rating;
-    }
 }
