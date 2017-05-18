@@ -14,19 +14,19 @@ if(empty($_SESSION['user_id']))
 
 // Calls deletion of article
 if(isset($_GET['deleteArticle'])){
-    $database->deleteNewsArticle($_GET['deleteArticle']);
+    $app->deleteNewsArticle($_GET['deleteArticle']);
     header("Location: profile.php");
     }
 
 // Calls deletion of category
 if(isset($_GET['deleteCategory'])){
-    $database->deleteCategory($_GET['deleteCategory']);
+    $app->deleteCategory($_GET['deleteCategory']);
     header("Location: profile.php");
     }
 
 // Calls deletion of user
 if(isset($_GET['deleteUser'])){
-    $database->deleteUser($_GET['deleteUser']);
+    $app->deleteUser($_GET['deleteUser']);
     header("Location: profile.php");
     }
 
@@ -44,7 +44,7 @@ if (!empty($_POST['btnArticle'])) {
             } else if (!isset($_POST['category'])) {
                 $article_error_message = 'Category field is required!';
             } else {
-                $user_id = $database->insertNewsArticle($_POST['heading'], $_POST['text'], $_POST['category'], $user->username);
+                $user_id = $app->insertNewsArticle($_POST['heading'], $_POST['text'], $_POST['category'], $user->username);
                 header("Location: profile.php"); //?upload=true
         }
     }
@@ -67,13 +67,13 @@ if (!empty($_POST['btnEditProfile'])) {
             } else if ($app->isEmail($_POST['email'])) {
                 $register_error_message = 'Email is already in use!'; */
             } else {
-                $user_id = $database->editUser($_SESSION['user_id'], $_POST['username'], $_POST['password'], $_POST['first_name'], $_POST['surname'], $_POST['email']);
+                $user_id = $app->editUser($_SESSION['user_id'], $_POST['username'], $_POST['password'], $_POST['first_name'], $_POST['surname'], $_POST['email']);
                 header("Location: profile.php"); // Redirect user to the profile.php
         }
     }
 
 if (!empty($_POST['btnCategory'])) { 
-    $database->insertCategory($_POST['category']);
+    $app->insertCategory($_POST['category']);
     header("Location: profile.php");
 }
 
@@ -239,7 +239,7 @@ if (!empty($_POST['btnCategory'])) {
             foreach($app->categories as $category){    
                     echo '<div class="col-lg-6">';
                     echo "<h3>" . $category->get_category() . "</h3>";
-                    $newsInCat = $database->categoryCount($category->get_category());
+                    $newsInCat = $app->categoryCount($category->get_category());
                     echo $newsInCat . ' news article(s) published in this category';
                     echo "<br>";
                     echo "<a class='btn btn-danger' href='" . $_SERVER['PHP_SELF'] . "?deleteCategory=" . $category->get_category() . "'>Delete</a>";

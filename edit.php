@@ -11,6 +11,7 @@ $text;
 $category;
 $updatearticle_error_message = '';
 $articlenumber;
+$publisher;
 
 if(isset($_GET['editArticle'])){
         $articlenumber = $_GET['editArticle'];
@@ -23,8 +24,23 @@ foreach($app->articles as $article){
         $heading = $article->get_heading();
         $text = $article->get_text();
         $category = $article->get_category();
+        $publisher = $article->get_publisher();
     }
 }
+
+
+// Redirects if not logged in or wrong user
+if(empty($_SESSION['user_id'])){
+    header("Location: index.php");
+} else {
+    $user = $app->UserDetails($_SESSION['user_id']); // get user details
+
+    if ($publisher != $user->username){
+            header("Location: profile.php");
+        }
+}
+
+
 
 if (!empty($_POST['btnArticleEdit'])) { 
             if ($_POST['heading'] == "") {
@@ -34,7 +50,7 @@ if (!empty($_POST['btnArticleEdit'])) {
             } else if (!isset($_POST['category'])) {
                 $updatearticle_error_message = 'Category field is required!';
             } else {
-                $user_id = $database->updateNewsArticle($articlenumber, $_POST['heading'], $_POST['text'], $_POST['category']);
+                $user_id = $app->updateNewsArticle($articlenumber, $_POST['heading'], $_POST['text'], $_POST['category']);
                 header("Location: profile.php"); //?upload=true
         }
     }
